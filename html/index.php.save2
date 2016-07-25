@@ -1,0 +1,11 @@
+--2016-07-25 17:49:11--  http://www.raspberrypi-spy.co.uk/archive/misc/lighttpd_test.php.txt
+Resolving www.raspberrypi-spy.co.uk (www.raspberrypi-spy.co.uk)... 5.77.52.12
+Connecting to www.raspberrypi-spy.co.uk (www.raspberrypi-spy.co.uk)|5.77.52.12|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 174 [text/plain]
+Saving to: ‘lighttpd_test.php.txt.4’
+
+     0K                                                       100% 5.15M=0s
+
+2016-07-25 17:49:11 (5.15 MB/s) - ‘lighttpd_test.php.txt.4’ saved [174/174]
+
