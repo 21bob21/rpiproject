@@ -1,6 +1,7 @@
 import random, time
 import RPi.GPIO as GPIO
 import math
+import thread
 
 def rgbsetup(rpin,gpin,bpin,freq):
 	GPIO.setwarnings(False)
@@ -38,67 +39,51 @@ def changeto(redv,greenv,bluev,speed):
 	g = int(round(greenv/2.55))
 	b = int(round(bluev/2.55))
 	print str(r) + " " + str(g) + " " + str(b)
-	print "changing from " + str(r) + " to " + str(redprev)
-	changered(r,speed)
-	changegreen(g,speed)
-	changeblue(b,speed)
+	thread.start_new_thread(changered,(r,speed))
+	thread.start_new_thread(changegreen,(g,speed))
+	thread.start_new_thread(changeblue,(b,speed))
 	time.sleep(2)
 
 def changered(red,speed):
 	global redprev
-	if(red < redprev):
-		print "redup"
-		up = redprev - red
-		print "the difference is" + str(up)
+	if(red > redprev):
 		for x in range (redprev,red):
-	            RED.ChangeDutyCycle(up)
+	            RED.ChangeDutyCycle(x)
 	            time.sleep(speed)
-            	    up = up + 1
 	else:
-		print "reddown"
-	        down = red - redprev
-		print "the difference is" + str(down)
-	        for x in range (red,redprev):
-	            RED.ChangeDutyCycle(down)
+	        down = redprev - red
+	        for x in range (0,down):
+	            RED.ChangeDutyCycle(redprev - x )
 	            time.sleep(speed)
-            	    down = down - 1
 	redprev = red
-	print redprev
-	print red
-
-def changeblue(blue,speed):
-	global blueprev
-	if(blue > blueprev):
-		up = blue - blueprev
-		for x in range (blueprev,blue):
-	            BLUE.ChangeDutyCycle(up)
-	            time.sleep(speed)
-            	    up = up + 1
-		    print up
-	else:
-	        down = blueprev - blue
-	        for x in range (blue,blueprev):
-	            BLUE.ChangeDutyCycle(down)
-	            time.sleep(speed)
-            	    down = down - 1
-		    print down
-	blueprev = blue
 
 def changegreen(green,speed):
 	global greenprev
 	if(green > greenprev):
-		up = green - greenprev
 		for x in range (greenprev,green):
-	            GREEN.ChangeDutyCycle(up)
+	            GREEN.ChangeDutyCycle(x)
 	            time.sleep(speed)
-            	    up = up + 1
 	else:
 	        down = greenprev - green
-	        for x in range (green,greenprev):
-	            GREEN.ChangeDutyCycle(down)
+	        for x in range (0,down):
+	            GREEN.ChangeDutyCycle(greenprev - x )
 	            time.sleep(speed)
-            	    down = down - 1
 	greenprev = green
+
+def changeblue(blue,speed):
+	global blueprev
+	if(blue > blueprev):
+		for x in range (blueprev,blue):
+	            BLUE.ChangeDutyCycle(x)
+	            time.sleep(speed)
+	else:
+	        down = blueprev - blue
+	        for x in range (0,down):
+	            BLUE.ChangeDutyCycle(blueprev - x )
+	            time.sleep(speed)
+	blueprev = blue
+
+
 
 
 RUNNING = True
@@ -109,12 +94,12 @@ try:
         r = random.randint(0,255)
 	g = random.randint(0,255)
 	b = random.randint(0,255)
-	changeto(r,g,b,0.02)
+	changeto(r,g,b,0.01)
  
 # If CTRL+C is pressed the main loop is broken
 except KeyboardInterrupt:
     RUNNING = False
-    print "\Quitting"
+    print "/Quitting"
  
 # Actions under 'finally' will always be called
 finally:
